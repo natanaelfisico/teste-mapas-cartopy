@@ -1,0 +1,17 @@
+from netCDF4 import Dataset
+import matplotlib.pyplot as plt
+import numpy as np
+from mpl_toolkits.basemap import Basemap
+url = "data/air.2016.nc"
+data = Dataset(url)
+air_temp = data.variables["air"][1,0,:,:]
+lats = data.variables["lat"][:]
+lons = data.variables["lon"][:]-360
+m = Basemap(projection="mill", resolution="l", llcrnrlon=min(lons),
+    llcrnrlat=min(lats), urcrnrlon=max(lons), urcrnrlat=max(lats))
+    m.drawcoastlines(linewidth=0.5, color="black")
+x, y = m(*np.meshgrid(lons, lats))
+
+m.pcolormesh(x, y, air_temp, shading="flat", cmap="viridis")
+m.colorbar(location="right")
+plt.show()
